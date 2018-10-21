@@ -1,21 +1,26 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace WebApplication1.DataBase
 {
-    public partial class peopleContext : DbContext
+    public sealed class PeopleContext : DbContext, IPeopleContext
     {
-        public peopleContext()
+        public PeopleContext()
         {
         }
 
-        public peopleContext(DbContextOptions<peopleContext> options)
+        public PeopleContext(DbContextOptions<PeopleContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Users> Users { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public Task<int> SaveChangesAsync()
+        {
+            return base.SaveChangesAsync();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

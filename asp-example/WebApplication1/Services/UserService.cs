@@ -9,11 +9,11 @@ namespace WebApplication1.Services
 {
     public class UserService : IUserService
     {
-        private readonly peopleContext _peopleContext;
+        private readonly IPeopleContext _peopleContext;
         
-        public UserService(peopleContext peopleContext)
+        public UserService()
         {
-            _peopleContext = peopleContext;
+            _peopleContext = new PeopleContext();
         }
 
         public async Task<List<User>> GetAllAsync()

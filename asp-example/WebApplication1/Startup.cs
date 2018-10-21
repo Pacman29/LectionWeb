@@ -37,10 +37,9 @@ namespace WebApplication1
             
             //dotnet ef dbcontext scaffold "Host=localhost;Database=people;Username=example;Password=example" Npgsql.EntityFrameworkCore.PostgreSQL --output-dir ./DataBase
             var connectionString = Configuration.GetConnectionString("peopleContext");
-            services.AddEntityFrameworkNpgsql().AddDbContext<peopleContext>(options => options.UseNpgsql(connectionString));
+            services.AddEntityFrameworkNpgsql().AddDbContext<PeopleContext>(options => options.UseNpgsql(connectionString));
 
             services.AddSingleton<IUserService, UserService>();
-            services.AddTransient<peopleContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

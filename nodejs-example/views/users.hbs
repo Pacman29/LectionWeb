@@ -1,0 +1,34 @@
+<link href="stylesheets/users.css" rel="stylesheet" rel=preload>
+<div class="panel-body">
+    <div class="table-container">
+        <table class="table-users table" border="0">
+            <tbody>
+            {{#each users}}
+                <tr>
+                    <td width="10" align="center">
+                    </td>
+                    <td>
+                        {{name}}<br>
+                    </td>
+                    <td>
+                        {{status}}
+                    </td>
+                    <td align="center">
+                        {{email}}
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+        {{#form "/users/new" class="form"}}
+            {{label "name" "Name"}}
+            {{input "name" ""}}
+            {{label "status" "Status"}}
+            {{input "status" ""}}
+            {{input_validation 'email' "" errors}}
+            {{field_errors 'email' errors }}
+            {{submit "save" "Add user"}}
+        {{/form}}
+
+    </div>
+</div>

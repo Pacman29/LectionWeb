@@ -8,12 +8,12 @@ namespace WebApplication1.Controllers
 {
     public class UsersController : Controller
     {
+        private readonly IUserService _userService;
+        
         public UsersController(IUserService userService)
         {
             this._userService = userService;
         }
-
-        private readonly IUserService _userService;
 
         [HttpGet]
         public async Task<IActionResult> Index()

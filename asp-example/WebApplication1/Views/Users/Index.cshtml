@@ -1,8 +1,17 @@
-@model TModel
-
+@model UserViewModel
+<link rel="stylesheet" href="~/css/users.css" asp-append-version="true" />
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Users";
     Layout = "_Layout";
 }
-
-<h2>title</h2>
+<h2>User list</h2>
+<div class="panel-body">
+    <div class="table-container">
+        <table class="table-users table" border="0">
+            <tbody>
+                @{Html.RenderPartial("UserList", Model.UsersList);}
+            </tbody>
+        </table>
+        @{Html.RenderPartial("NewUser", Model.User);}
+    </div>
+</div>

@@ -1,0 +1,15 @@
+@model User
+@using (Html.BeginForm("New","Users",FormMethod.Post))
+{
+    @Html.ValidationSummary(true)
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name)
+    @Html.ValidationMessageFor(m => m.Name)
+    @Html.LabelFor(m => m.Status)
+    @Html.TextBoxFor(m => m.Status)
+    @Html.ValidationMessageFor(m => m.Status)
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email)
+    @Html.ValidationMessageFor(m => m.Email)
+    <input type="submit" value="Add" />
+}

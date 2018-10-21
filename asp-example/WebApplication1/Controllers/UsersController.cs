@@ -10,15 +10,15 @@ namespace WebApplication1.Controllers
     {
         public UsersController(IUserService userService)
         {
-            this.UserService = userService;
+            this._userService = userService;
         }
 
-        private IUserService UserService { get; set; }
+        private readonly IUserService _userService;
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var users = await UserService.GetAllAsync();
+            var users = await _userService.GetAllAsync();
             return View(new UserViewModel()
             {
                 UsersList = users
@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<RedirectToActionResult> New([FromForm] User user)
         {
-            await UserService.AddUserAsync(user);
+            await _userService.AddUserAsync(user);
             return RedirectToAction("Index");
         }
     }

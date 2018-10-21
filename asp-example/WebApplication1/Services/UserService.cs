@@ -9,24 +9,23 @@ namespace WebApplication1.Services
 {
     public class UserService : IUserService
     {
-        public UserService()
+        private readonly peopleContext _peopleContext;
+        
+        public UserService(peopleContext peopleContext)
         {
-            this.PeopleContext = new peopleContext();
+            _peopleContext = peopleContext;
         }
-
-        private peopleContext PeopleContext { get; set; }
-
 
         public async Task<List<User>> GetAllAsync()
         {
-            return await PeopleContext.Users.Select(user => user.ToUserModel()).ToListAsync();
+            return await _peopleContext.Users.Select(user => user.ToUserModel()).ToListAsync();
         }
 
         public async Task AddUserAsync(User user)
         {
-            var result = await PeopleContext.Users.AddAsync(Users.FromUserModel(user));
+            var result = await _peopleContext.Users.AddAsync(Users.FromUserModel(user));
             if (result.State == EntityState.Added)
-                await PeopleContext.SaveChangesAsync();
+                await _peopleContext.SaveChangesAsync();
         }
     }
 }

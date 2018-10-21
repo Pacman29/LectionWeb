@@ -40,6 +40,7 @@ namespace WebApplication1
             services.AddEntityFrameworkNpgsql().AddDbContext<peopleContext>(options => options.UseNpgsql(connectionString));
 
             services.AddSingleton<IUserService, UserService>();
+            services.AddTransient<peopleContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

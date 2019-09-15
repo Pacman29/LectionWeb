@@ -7,6 +7,8 @@
     "docker": "DBHOST=db DBPORT=5432 node ./bin/www"
   },
   "dependencies": {
+    "awilix": "^4.2.2",
+    "awilix-express": "^2.1.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-polyfill": "^6.9.1",
@@ -18,6 +20,7 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-layout": "^0.1.0",
+    "glob": "^7.1.4",
     "handlebars-form-helpers": "^0.1.3",
     "hbs": "~4.0.1",
     "http-errors": "~1.6.2",
@@ -34,7 +37,12 @@
     ],
     "plugins": [
       "add-module-exports",
-      "transform-runtime"
+      "transform-runtime",
+      "transform-decorators-legacy"
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "awilix-router-core": "latest"
   }
 }

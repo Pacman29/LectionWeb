@@ -1,37 +1,50 @@
-import models from "../database";
+import UserError from "../errors/user-error";
 
-let init;
 export default class UserService {
-    constructor(){
-        if(init)
-            return init;
-        init = this;
+    constructor({userRepository}){
+        this.userRepository = userRepository;
     }
 
-    async getAll(){
-        let result = [];
+    async getAll({offset, limit}){
+        let result = undefined;
         try {
-            result = await models.Users.findAll();
-            result = result.map(obj => obj.dataValues)
+            result = await this.userRepository.all(offset, limit);
         } catch (e) {
-            console.error(e);
+            if(e instanceof Error)
+                result = e;
         }
         return result;
     }
 
-    async addUser(name,status,email){
+    async addUser(userModel){
         let result = undefined;
         try {
-            result = await models.Users.create(
-                {
-                    name,
-                    status,
-                    email
-                }
-            );
-            result = result.dataValues;
+            result = await this.userRepository.create(userModel);
         } catch (e) {
-            console.error(e);
+            if(e instanceof UserError)
+                result = e;
+        }
+        return result;
+    }
+
+    async editUser(userModel) {
+        let result = undefined;
+        try {
+            result = await this.userRepository.update(userModel);
+        } catch (e) {
+            if(e instanceof UserError)
+                result = e;
+        }
+        return result;
+    }
+
+    async deleteUser(userModel){
+        let result = {};
+        try {
+            result = await this.userRepository.delete(userModel);
+        } catch (e) {
+            if(e instanceof Error)
+                result = e;
         }
         return result;
     }

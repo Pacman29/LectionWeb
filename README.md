@@ -14,11 +14,11 @@ $ psql -h localhost -U example people
 #### Настройка NodeJs
 
 1. Установить [NodeJs](https://nodejs.org/en/download/current/)
-2. В дирректории с приложением выполнить: 
+2. В директории приложения nodejs-example выполнить: 
  ```
  npm i 
  ```
-3. В дирректории с приложением выполнить: 
+3. В директории приложения nodejs-example выполнить: 
  ```
  npm start
  ```

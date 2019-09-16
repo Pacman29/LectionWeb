@@ -11,7 +11,7 @@ require('babel-polyfill');
 var app = require('../app');
 var debug = require('debug')('example-init-express:server');
 var http = require('http');
-var models = require('../database');
+var models = require('../database/index');
 
 /**
  * Get port from environment and store in Express.

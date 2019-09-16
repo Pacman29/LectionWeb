@@ -10,8 +10,12 @@ const sequelize = new Sequelize('people', 'example', 'example', {
 });
 
 const models = {
-    Users: sequelize.import('./dto/user')
+    Users: sequelize.import('./dto/user'),
+    Articles: sequelize.import('./dto/article')
 };
+
+models.Users.hasMany(models.Articles);
+models.Articles.belongsTo(models.Users);
 
 Object.keys(models).forEach(key => {
     if ('associate' in models[key]) {

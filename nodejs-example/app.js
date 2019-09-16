@@ -1,6 +1,5 @@
 import createError from 'http-errors';
 import express from 'express';
-import bodyParser from 'body-parser';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import lessMiddleware from 'less-middleware';

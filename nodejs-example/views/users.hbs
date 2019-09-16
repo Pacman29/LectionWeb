@@ -11,7 +11,7 @@
                         {{name}}<br>
                     </td>
                     <td>
-                        {{status}}
+                        {{type}}
                     </td>
                     <td align="center">
                         {{email}}
@@ -20,15 +20,24 @@
             {{/each}}
             </tbody>
         </table>
-        {{#form "/users/new" class="form"}}
-            {{label "name" "Name"}}
-            {{input "name" ""}}
-            {{label "type" "Status"}}
-            {{input "type" ""}}
-            {{input_validation 'email' "" errors}}
-            {{field_errors 'email' errors }}
-            {{submit "save" "Add user"}}
-        {{/form}}
-
     </div>
+
+    {{#form "api/v1/users" class="form"}}
+        {{label "name" "Name"}}
+        {{input "name" ""}}
+        {{label "password" "Password"}}
+        {{input "password" ""}}
+        {{label "type" "Type"}}
+        <label>
+            <select name="type">
+                {{#each usersType}}
+                    <option value={{this}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </label>
+        {{label "email" "Email"}}
+        {{input_validation 'email' "" errors}}
+        {{field_errors 'email' errors }}
+        {{submit "save" "Add user"}}
+    {{/form}}
 </div>

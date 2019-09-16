@@ -17,5 +17,6 @@ export default (app) => {
 
     app.use(scopePerRequest(container));
     app.use('/api/v1', loadControllers(`${__dirname}/controllers/api/*.js`, { cwd: __dirname }));
+    app.use('/', loadControllers(`${__dirname}/controllers/views/*.js`, { cwd: __dirname }));
     global.DI = container;
 }

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "start_example_init": "node ./Example_Init_express/bin/www",
     "docker": "DBHOST=db DBPORT=5432 node ./bin/www"
   },
   "dependencies": {

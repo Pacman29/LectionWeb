@@ -1,6 +1,40 @@
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
+
 export const UserTypes = {
     NONE: "NONE", WRITER: "WRITER", ADMIN: "ADMIN"
 };
+
+export function setPassword(user, password) {
+    user.salt = crypto.randomBytes(16).toString('hex');
+    user.password = crypto.pbkdf2Sync(password, user.salt, 10000, 512, 'sha512').toString('hex')
+
+}
+
+export function validatePassword(user, password){
+    const hash = crypto.pbkdf2Sync(password, user.salt, 10000, 512, 'sha512').toString('hex');
+    return user.password === hash;
+}
+
+export function generateJWT(user) {
+    const today = new Date();
+    const expirationDate = new Date(today);
+    expirationDate.setDate(today.getDate() + 60);
+
+    return jwt.sign({
+        email: user.email,
+        id: user.id,
+        exp: parseInt(expirationDate.getTime() / 1000, 10),
+    }, 'secret');
+}
+
+export function toAuthJSON(user) {
+    return {
+        id: user.id,
+        email: user.email,
+        token: generateJWT(user),
+    };
+}
 
 const user = (sequelize, DataTypes) => {
     return sequelize.define('users',{
@@ -14,14 +48,11 @@ const user = (sequelize, DataTypes) => {
             allowNull: false,
         },
         password: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT(1024),
             allowNull: false,
-            validate: {
-                len: {
-                    args: 5,
-                    msg: "Password must be atleast 5 characters in length"
-                }
-            }
+        },
+        salt: {
+            type: DataTypes.STRING,
         },
         type: {
             type: DataTypes.ENUM(Object.values(UserTypes)),
@@ -35,6 +66,13 @@ const user = (sequelize, DataTypes) => {
             isEmail: {
                 msg: "Email address must be valid"
             },
+        }
+    }, {
+        setterMethods: {
+
+        },
+        getterMethods : {
+
         }
     })
 

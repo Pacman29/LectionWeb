@@ -9,6 +9,14 @@ export default class UserService {
         return this.userRepository.all(offset, limit);
     }
 
+    async getUserByEmail(userModel){
+        return this.userRepository.findByEmail(userModel.dataValues);
+    }
+
+    async getUserById(userModel){
+        return this.userRepository.findById(userModel.dataValues);
+    }
+
     async addUser(userModel){
         return this.userRepository.create(userModel.dataValues);
     }

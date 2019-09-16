@@ -2,6 +2,7 @@ import models from "../database";
 import UserError from "../errors/user-error";
 import * as Sequelize from "sequelize";
 import ServerError from "../errors/server-error";
+import {setPassword} from "../database/dto/user";
 
 export default class UserRepository {
     constructor({db}) {
@@ -17,7 +18,28 @@ export default class UserRepository {
             });
     }
 
+    async findByEmail(userModel) {
+        return this.db.Users.findOne({where: {email: userModel.email}})
+            .then(result => {
+                return result.dataValues;
+            })
+            .catch(err => {
+                throw new ServerError(err);
+            })
+    }
+
+    async findById(userModel) {
+        return this.db.Users.findByPk(userModel.id)
+            .then(result => {
+                return result.dataValues;
+            })
+            .catch(err => {
+                throw new ServerError(err);
+            })
+    }
+
     async create(userModel) {
+        setPassword(userModel, userModel.password);
         return this.db.Users.create(userModel).then((query) => {
             return query.dataValues;
         }).catch((err) => {
@@ -37,6 +59,8 @@ export default class UserRepository {
         let result = undefined;
         return this.db.Users.findByPk(userModel.id).then((user) => {
             if(user){
+                if(userModel.password !== undefined)
+                    setPassword(userModel, userModel.password);
                 return user.update(userModel).then(query => {
                     return query.dataValues;
                 }).catch(err => {

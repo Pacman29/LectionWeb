@@ -1,0 +1,47 @@
+<link href="stylesheets/users.css" rel="stylesheet" rel=preload>
+<h1 class="head_title">
+    User List
+</h1>
+
+<div class="panel-body">
+    <div class="table-container">
+        <table class="table-users table" border="0">
+            <tbody>
+            {{#each users}}
+                <tr>
+                    <td width="10" align="center">
+                    </td>
+                    <td>
+                        {{name}}<br>
+                    </td>
+                    <td>
+                        {{type}}
+                    </td>
+                    <td align="center">
+                        {{email}}
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    {{#form "api/v1/users" class="form"}}
+        {{label "name" "Name"}}
+        {{input "name" ""}}
+        {{label "password" "Password"}}
+        {{input "password" ""}}
+        {{label "type" "Type"}}
+        <label>
+            <select name="type">
+                {{#each usersType}}
+                    <option value={{this}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </label>
+        {{label "email" "Email"}}
+        {{input_validation 'email' "" errors}}
+        {{field_errors 'email' errors }}
+        {{submit "save" "Add user"}}
+    {{/form}}
+</div>

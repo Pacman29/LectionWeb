@@ -1,12 +1,25 @@
 import {route, GET, POST, PUT, DELETE, before} from "awilix-express";
 import bodyParser from 'body-parser'
-import UserModel from "../../models/user";
+import Sequelize from "sequelize";
+
 
 @route('/users')
 class UsersController {
 
-    constructor({userService}){
+    constructor({userService, userModel}){
         this.userService = userService;
+        this.userModel = userModel;
+    }
+
+    errorHandler(req, res) {
+        return (err) => {
+            if(err.statusCode)
+                res.status(err.statusCode).send(err.message);
+            else if (err instanceof Sequelize.ValidationError)
+                res.status(400).send(err.errors.map(e => e.message).join('\n'));
+            else
+                res.status(500).send(err);
+        }
     }
 
     @route('/')
@@ -14,7 +27,9 @@ class UsersController {
     async getAll(req, res, next) {
         let offset = req.query.offset | 0;
         let limit = req.query.limit | 20;
-        let result = await this.userService.getAll({offset, limit});
+        this.userService.getAll({offset, limit})
+            .then(result => res.send(result))
+            .catch(this.errorHandler(req, res));
         // res.render('users',{
         //     layout: 'container',
         //     container : {
@@ -22,12 +37,6 @@ class UsersController {
         //     },
         //     users
         // });
-        if(!result)
-            res.status(400).send();
-        else if (result instanceof Error)
-            res.status(400).send(result.message);
-        else
-            res.send(result);
     }
 
     @route('/')
@@ -36,13 +45,13 @@ class UsersController {
     async create(req, res, next) {
         if(!req.body)
             res.status(400).send("Request body not found");
-        let result = await this.userService.addUser(new UserModel(req.body));
-        if(!result)
-            res.status(400).send();
-        else if (result instanceof Error)
-            res.status(400).send(result.message);
-        else
-            res.send(result);
+
+        this.userModel.build(req.body).validate()
+            .then((model) => {
+                return this.userService.addUser(model)
+            }).then(result => {
+                res.send(result);
+            }).catch(this.errorHandler(req, res));
         //res.redirect('/users');
     }
 
@@ -57,13 +66,13 @@ class UsersController {
             else {
                 let data = req.body;
                 data.id = id;
-                let result = await this.userService.editUser(new UserModel(data));
-                if(!result)
-                    res.status(400).send();
-                else if (result instanceof Error)
-                    res.status(400).send(result.message);
-                else
-                    res.send(result);
+
+                this.userModel.build(data).validate()
+                    .then((model) => {
+                        return this.userService.editUser(model)
+                    }).then(result => {
+                        res.send(result);
+                    }).catch(this.errorHandler(req, res));
             }
         } else {
             res.status(404).send("User id is incorrect")
@@ -75,13 +84,10 @@ class UsersController {
     async remove(req, res, next) {
         let id = Number(req.params.id);
         if(!isNaN(id)){
-            let result = await this.userService.deleteUser(new UserModel({id}));
-            if(!result)
-                res.status(400).send();
-            else if (result instanceof Error)
-                res.status(400).send(result.message);
-            else
-                res.send(result);
+            this.userService.deleteUser({dataValues: {id}})
+                .then(result => {
+                    res.send(result);
+                }).catch(this.errorHandler(req, res));
         } else {
             res.status(404).send("User id is incorrect")
         }

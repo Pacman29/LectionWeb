@@ -23,8 +23,8 @@
         {{#form "/users/new" class="form"}}
             {{label "name" "Name"}}
             {{input "name" ""}}
-            {{label "status" "Status"}}
-            {{input "status" ""}}
+            {{label "type" "Status"}}
+            {{input "type" ""}}
             {{input_validation 'email' "" errors}}
             {{field_errors 'email' errors }}
             {{submit "save" "Add user"}}

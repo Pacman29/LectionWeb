@@ -6,46 +6,18 @@ export default class UserService {
     }
 
     async getAll({offset, limit}){
-        let result = undefined;
-        try {
-            result = await this.userRepository.all(offset, limit);
-        } catch (e) {
-            if(e instanceof Error)
-                result = e;
-        }
-        return result;
+        return this.userRepository.all(offset, limit);
     }
 
     async addUser(userModel){
-        let result = undefined;
-        try {
-            result = await this.userRepository.create(userModel);
-        } catch (e) {
-            if(e instanceof UserError)
-                result = e;
-        }
-        return result;
+        return this.userRepository.create(userModel.dataValues);
     }
 
     async editUser(userModel) {
-        let result = undefined;
-        try {
-            result = await this.userRepository.update(userModel);
-        } catch (e) {
-            if(e instanceof UserError)
-                result = e;
-        }
-        return result;
+        return this.userRepository.update(userModel.dataValues);
     }
 
     async deleteUser(userModel){
-        let result = {};
-        try {
-            result = await this.userRepository.delete(userModel);
-        } catch (e) {
-            if(e instanceof Error)
-                result = e;
-        }
-        return result;
+        return this.userRepository.delete(userModel.dataValues)
     }
 }

@@ -2,6 +2,7 @@ import {asClass, asValue, createContainer, InjectionMode} from 'awilix'
 import {loadControllers, scopePerRequest} from "awilix-express";
 import UserService from "./services/user_service";
 import models from "./database";
+import user from "./database/dto/user";
 import UserRepository from "./repositories/user_repository";
 
 export default (app) => {
@@ -10,7 +11,8 @@ export default (app) => {
     }).register({
         userRepository: asClass(UserRepository).singleton(),
         userService: asClass(UserService).singleton(),
-        db: asValue(models)
+        db: asValue(models),
+        userModel: asValue(models.Users)
     });
 
     app.use(scopePerRequest(container));

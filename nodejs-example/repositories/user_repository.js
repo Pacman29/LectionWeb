@@ -1,7 +1,7 @@
 import models from "../database";
-import UserModel from "../models/user";
 import UserError from "../errors/user-error";
 import * as Sequelize from "sequelize";
+import ServerError from "../errors/server-error";
 
 export default class UserRepository {
     constructor({db}) {
@@ -9,21 +9,27 @@ export default class UserRepository {
     }
 
     async all(offset, limit) {
-        let result = [];
-        let queryResult = await this.db.Users.findAll({ offset, limit });
-        queryResult.forEach((r, i) => result[i] = new UserModel(r.dataValues));
-        return result;
+        return this.db.Users.findAll({ offset, limit })
+            .then(result => {
+                return result.map(data => data.dataValues);
+            }).catch(err => {
+                throw new ServerError(err)
+            });
     }
 
     async create(userModel) {
-        let result = undefined;
-        userModel.createdAt = userModel.updatedAt = new Date();
         return this.db.Users.create(userModel).then((query) => {
-            result = query.dataValues;
-            return result;
+            return query.dataValues;
         }).catch((err) => {
-            if (err instanceof Sequelize.ValidationError)
-                return new UserError("User with same email already exists")
+            if (err instanceof Sequelize.ValidationError || err instanceof Sequelize.UniqueConstraintError) {
+                let errorMessage = err.errors.map(e => e.message).join('\n');
+                throw new UserError(errorMessage);
+            }
+            if(err instanceof Sequelize.DatabaseError) {
+                if(err.message === "invalid input value for enum enum_users_type: \"t\"")
+                    throw new UserError("invalid user type");
+            }
+            throw new ServerError(err)
         });
     }
 
@@ -31,36 +37,15 @@ export default class UserRepository {
         let result = undefined;
         return this.db.Users.findByPk(userModel.id).then((user) => {
             if(user){
-                let userDataOld = user.dataValues;
-                let flagUpdated = false;
-                let updateProperty = {};
-
-                if(userModel.name && userModel.name !== userDataOld.name){
-                    updateProperty.name = userModel.name;
-                    flagUpdated = true;
-                }
-                if(userModel.status && userModel.status !== userDataOld.status){
-                    updateProperty.status = userModel.status;
-                    flagUpdated = true;
-                }
-                if(userModel.email && userModel.email !== userDataOld.email){
-                    updateProperty.email = userModel.email;
-                    flagUpdated = true;
-                }
-
-                if(flagUpdated){
-                    updateProperty.updatedAt = new Date();
-                    return user.update(updateProperty).then(query => {
-                        return query.dataValues;
-                    }).catch(err => {
-                        if (err instanceof Sequelize.ValidationError)
-                            throw new UserError("User with same email already exists");
-                    });
-                }
-                return userDataOld;
+                return user.update(userModel).then(query => {
+                    return query.dataValues;
+                }).catch(err => {
+                    if (err instanceof Sequelize.ValidationError)
+                        throw new UserError("User with same email already exists");
+                });
             }
         }).catch(err => {
-            return new UserError(err.message);
+            throw new ServerError(err);
         });
     }
 
@@ -75,7 +60,7 @@ export default class UserRepository {
         }).then(() => {
             return deletedUser;
         }).catch(err => {
-            return new UserError(err.message)
+            throw new ServerError(err.message)
         });
     }
 }

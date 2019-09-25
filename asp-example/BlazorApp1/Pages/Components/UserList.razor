@@ -1,0 +1,40 @@
+﻿@using WebApplication1.Models
+@using WebApplication1.Services
+@inject IUserService UserService
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table-users table" border="0">
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td width="10" align="center">
+                    </td>
+                    <td>
+                        @user.Name<br>
+                    </td>
+                    <td>
+                        @user.Status
+                    </td>
+                    <td align="center">
+                        @user.Email
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<User> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetAllAsync();
+    }
+}

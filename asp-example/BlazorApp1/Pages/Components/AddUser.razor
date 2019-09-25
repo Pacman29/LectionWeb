@@ -1,0 +1,28 @@
+﻿@using WebApplication1.Models
+@using WebApplication1.Services
+@inject IUserService UserService
+
+<EditForm Model="@user" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label for="Name">Name</label>
+    <InputText id="Name" @bind-Value="@user.Name" />
+    <label for="Status">Status</label>
+    <InputText id="Status" @bind-Value="@user.Status" />
+    <label for="Email">Email</label>
+    <InputText id="Email" @bind-Value="@user.Email" />
+
+    <button type="submit">Add</button>
+</EditForm>
+
+@code {
+
+    private User user = new User();
+
+    private async void HandleValidSubmit()
+    {
+        await UserService.AddUserAsync(user);
+    }
+
+}
